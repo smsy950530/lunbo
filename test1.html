@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>lunbo test1</title>
+</head>
+<style type="text/css">
+	a {text-decoration: none;}
+	#container img {
+		float: left;
+	}
+	#container {
+		position: relative;
+		width:600px;
+		height: 400px;
+		overflow: hidden;
+	}
+	#container:hover .btn{
+		display: block;
+	}
+	#container #list {
+		width: 4500px;
+		height: 400px;
+		position: absolute;
+		z-index: 1;
+	}
+	#container .btn {
+		position: absolute;
+		z-index: 2;
+		top: 200px;
+		font-size: 30px;
+		width: 40px;
+		height: 40px;
+		text-align: center;
+		background: rgba(0,0,0,0.3);
+		color:#000;
+		display: none;
+	}
+	#container .btn:hover {
+		background: rgba(0,0,0,0.7);
+		color:#ccc;
+	}
+	#container .button #b1 {
+		left:20px;
+	}
+	#container .button #b2 {
+		right:20px;
+	}
+	#cir {
+		z-index: 2;
+		position: absolute;
+		bottom: 10px;
+		width: 140px;
+		left: 230px;
+	}
+	#cir span{
+		width:20px;
+		height: 20px;
+		border: 1px solid #fff;
+		background:#333;
+		display: block;
+		float: left;
+		z-index: 2;
+		border-radius: 10px;
+		margin-left: 5px;
+		cursor: pointer;
+	}
+	#cir .on {
+		background: #ccc;
+	}
+</style>
+<body>
+<script type="text/javascript">
+	window.onload=function (){
+		var container = document.getElementById('container');
+		var list = document.getElementById('list');
+		var cir = document.getElementById('cir').getElementsByTagName('span');
+		var b1 = document.getElementById('b1');
+		var b2 = document.getElementById('b2');
+		var index = 1;
+		var animated = false;
+		var timer;
+		function showcir (){
+			for(i = 0;i < cir.length;i++){
+				if(cir[i].className == 'on'){
+					cir[i].className = '';
+					break;
+				}
+			}
+			cir[index-1].className = 'on';
+		}
+		showcir();
+		function animate (offset) {
+			var newl = parseInt(list.style.left) + offset;
+			animated = true;
+			var time = 300;
+			var interval = 10;
+			var speed = offset/(time/interval);
+
+			function go(){
+                    if ( (speed > 0 && parseInt(list.style.left) < newl) || (speed < 0 && parseInt(list.style.left) > newl)) {
+                        list.style.left = parseInt(list.style.left) + speed + 'px';
+                        setTimeout(go, interval);
+                    }
+                    else {
+                        list.style.left = newl + 'px';
+                        if(newl > -600){
+							list.style.left=-3000 + 'px';
+						}
+						if(newl < -3000){
+							list.style.left=-600 + 'px';
+						}
+                        animated = false;
+                    }
+                }
+			go();
+			
+			
+		}
+
+		function start (){
+			timer = setInterval(function (){
+				b2.onclick();
+			},3000);
+		}
+		function stop (){
+			clearInterval(timer);
+		}
+
+		b1.onclick = function (){
+			index -= 1;
+			if(index<=0){
+				index = 5;
+			}
+			showcir();
+			if(animated == false){
+				animate (600)
+			}
+			
+			
+		}
+		b2.onclick = function (){
+			index += 1;
+			if(index >=6){
+				index = 1;
+			}
+			showcir();
+			if(animated == false){
+				animate (-600)
+			}
+			
+		}
+
+		for(var i = 0;i < cir.length;i ++){
+			cir[i].onclick = function (){
+				var myindex = parseInt(this.getAttribute('index'));
+				var offset = -600 * (myindex - index);
+				if(animated == false){
+					animate(offset);
+				}
+				index = myindex;
+				
+				showcir(index)
+			}
+		}
+		container.onmouseover = stop;
+		container.onmouseout = start;
+	}
+</script>
+<div>
+	<div id="container">
+		<div id="list" style="left:-600px">
+			<img src="img/5.jpg">
+			<img src="img/1.jpg">
+			<img src="img/2.jpg">
+			<img src="img/3.jpg">
+			<img src="img/4.jpg">
+			<img src="img/5.jpg">
+			<img src="img/1.jpg">
+
+		</div>
+	
+		<div class="button">
+			<a href="#" id="b1" class="btn"><</a>
+			<a href="#" id="b2" class="btn">></a>
+		</div>
+		<div id="cir">
+			<span index="1"></span>
+			<span index="2"></span>
+			<span index="3"></span>
+			<span index="4"></span>
+			<span index="5"></span>
+		</div>
+	</div>
+</div>
+</body>
+</html>

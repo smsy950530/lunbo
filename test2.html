@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>test 02 </title>
+</head>
+<style type="text/css">
+	#container {
+		width: 600px;
+		height: 400px;
+		overflow: hidden;
+		position: relative;
+		
+	}
+	#list {
+		width: 4300px;
+		height: 600px;
+		position: absolute;
+		z-index: 1;
+
+	}
+	#list span {
+		float: left;
+	}
+	
+	#btn #left {
+		position: absolute;
+		width: 30px;
+		text-align: center;
+		font-size: 30px;
+		left: 20px;
+		top: 185px;
+		color:#fff;
+		background:#333;
+		background: rgba(0,0,0,0.3);
+		cursor: pointer;
+		z-index: 2;
+	}
+	#btn #right {
+		position: absolute;
+		width: 30px;
+		text-align: center;
+		font-size: 30px;
+		right: 20px;
+		top: 185px;
+		color:#fff;
+		background:#333;
+		background: rgba(0,0,0,0.3);
+		cursor: pointer;
+		z-index: 2;
+	}
+	#container:hover #left,#container:hover #right {
+		background: rgba(0,0,0,0.6);
+	}
+	#ico {
+		position: absolute;
+		z-index: 2;
+		bottom:10px;
+		left:230px;
+	}
+	#ico span {
+		display: inline;
+		border-radius: 10px;
+		width:20px;
+		height: 20px;
+		margin-right: 10px;
+		border:1px solid #000;
+		float: left;
+		background: #333;
+		cursor: pointer;
+	}
+	#ico .num {
+		background: #fff;
+	}
+</style>
+<body>
+<div id="container">
+	<div id="list" style="left:-600px">
+		<span><img src="img/5.jpg"></span>
+		<span><img src="img/1.jpg"></span>
+		<span><img src="img/2.jpg"></span>
+		<span><img src="img/3.jpg"></span>
+		<span><img src="img/4.jpg"></span>
+		<span><img src="img/5.jpg"></span>
+		<span><img src="img/1.jpg"></span>
+	</div>
+
+	<div id="btn">
+		<span id="left"><</span>
+		<span id="right">></span>
+	</div>
+	<div id="ico">
+		<span index = "1"></span>
+		<span index = "2"></span>
+		<span index = "3"></span>
+		<span index = "4"></span>
+		<span index = "5"></span>
+	</div>
+</div>
+<script type="text/javascript">
+	window.onload = function (){
+		var container = document.getElementById('container');
+		var list = document.getElementById('list');
+		var ico = document.getElementById('ico').getElementsByTagName('span');
+		var left = document.getElementById('left');
+		var right = document.getElementById('right');
+		var index = 1;
+		var on = false;
+		var timer;
+
+		function showico(){
+			for(var i = 0 ;i < ico.length; i++){
+				if(ico[i].className == 'num'){
+					ico[i].className = '';
+					break;
+				}
+
+			}
+			
+			
+			ico[index - 1].className = 'num';
+		}
+		showico();
+		function oc (set){
+			var t = 300;//位移总时间
+			var le = 10;//位移间隔时间
+			var lim = set/(t/le);//位移像素
+			var newl = parseInt(list.style.left);
+			var use = parseInt(list.style.left) + set ;
+			on = true;
+			function go(){
+				if( (set > 0 && parseInt(list.style.left) < use)||(set < 0 && parseInt(list.style.left) > use) ){
+					
+						list.style.left = parseInt(list.style.left) + lim + 'px';
+						setTimeout(go,le);
+				}else {
+					list.style.left = use + 'px';
+					if(use > -600){
+						list.style.left = -3000 + 'px';
+					}
+					if(use < -3000){
+						list.style.left = -600 + 'px';
+					}
+				on = false;
+
+				}
+			}
+			go();
+		}
+		function start (){
+			timer = setInterval(function (){
+				right.onclick();
+			},3000)
+		}
+		start();
+		function stop (){
+			clearInterval(timer);
+		}
+
+		left.onclick = function (){
+			if(on == false){
+				oc(600);
+				index -=1;
+				if(index < 1){
+					index=5;
+				}
+				showico();
+			}
+			
+		}
+		right.onclick = function (){
+			if(on == false){
+				oc(-600);
+				index +=1;
+				if(index > 5){
+					index=1;
+				}
+				showico();
+			}
+			
+		}
+		for(var i = 0;i < ico.length; i++){
+			ico[i].onclick = function (){
+				
+				var myindex = parseInt(this.getAttribute('index'));
+				var l = -600 * (myindex - index) ;
+				oc(l);
+				index = myindex;
+				showico()
+			}
+
+		}
+	
+	container.onmouseover = stop;
+	container.onmouseout = start;
+	}
+</script>
+</body>
+</html>

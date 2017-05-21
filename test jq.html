@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>test01 jq</title>
+<style type="text/css">
+	#container {
+		width: 600px;
+		height: 400px;
+		overflow: hidden;
+		position: relative;
+		
+	}
+	#list {
+		width: 4300px;
+		height: 600px;
+		position: absolute;
+		z-index: 1;
+
+	}
+	#list span {
+		float: left;
+	}
+	
+	#btn #left {
+		position: absolute;
+		width: 30px;
+		text-align: center;
+		font-size: 30px;
+		left: 20px;
+		top: 185px;
+		color:#fff;
+		background:#333;
+		background: rgba(0,0,0,0.3);
+		cursor: pointer;
+		z-index: 2;
+	}
+	#btn #right {
+		position: absolute;
+		width: 30px;
+		text-align: center;
+		font-size: 30px;
+		right: 20px;
+		top: 185px;
+		color:#fff;
+		background:#333;
+		background: rgba(0,0,0,0.3);
+		cursor: pointer;
+		z-index: 2;
+	}
+	#container:hover #left,#container:hover #right {
+		background: rgba(0,0,0,0.6);
+	}
+	#ico {
+		position: absolute;
+		z-index: 2;
+		bottom:10px;
+		left:230px;
+	}
+	#ico span {
+		display: inline;
+		border-radius: 10px;
+		width:20px;
+		height: 20px;
+		margin-right: 10px;
+		border:1px solid #000;
+		float: left;
+		background: #333;
+		cursor: pointer;
+	}
+	#ico .num {
+		background: #fff;
+	}
+</style>
+</head>
+<body>
+<div id="container">
+	<div id="list" style="left:-600px">
+		<span><img src="img/5.jpg"></span>
+		<span><img src="img/1.jpg"></span>
+		<span><img src="img/2.jpg"></span>
+		<span><img src="img/3.jpg"></span>
+		<span><img src="img/4.jpg"></span>
+		<span><img src="img/5.jpg"></span>
+		<span><img src="img/1.jpg"></span>
+	</div>
+
+	<div id="btn">
+		<span id="left"><</span>
+		<span id="right">></span>
+	</div>
+	<div id="ico">
+		<span index = "1"></span>
+		<span index = "2"></span>
+		<span index = "3"></span>
+		<span index = "4"></span>
+		<span index = "5"></span>
+	</div>
+</div>
+<script type="text/javascript" src="static/jquery1.42.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(function(){
+		var container = $('#container');
+		var list = $('#list');
+		var left = $('#left');
+		var right = $('#right');
+		var ico = $('#ico span');
+		var index = 1;
+		var timer;
+
+		left.click(function (){
+			ani(600);
+			index--;
+			if(index < 1){
+				index = 5;
+			}
+			showico();
+		});
+		right.click(function (){
+			ani(-600);
+			index++;
+			if(index > 5){
+				index = 1;
+			}
+			showico();
+		})
+		ico.each(function (){
+			$(this).click(function (){
+				var nindex = parseInt($(this).attr('index'));
+				var nl = -600*( nindex - index);
+				var nset = parseInt(list.css('left')) +nl + 'px';
+				list.css({'left':nset});
+				index = nindex;
+				showico();
+			})
+		})
+
+		function start (){
+			timer = setInterval(function (){
+				right.trigger('click')
+			},3000);
+		}
+		start();
+		function stop (){
+			clearInterval(timer);
+		}
+
+		function showico (){
+			ico.eq(index-1).addClass('num').siblings().removeClass('num');
+			
+		}
+		showico();
+		function ani(set){
+			var nset = parseInt(list.css('left')) + set ;
+			var ltime = 300;
+			var linterval = 10;
+			var l = set/(300/10);
+			var lset;
+			
+
+			function go(){
+				if( (set < 0 && parseInt(list.css('left')) > nset) || (set > 0 && parseInt(list.css('left')) < nset)){
+				lset = parseInt(list.css('left')) + l + 'px';
+				list.css({'left':lset});
+				setTimeout(go,linterval);
+			}else {
+				if(nset < -3000){
+					list.css({'left':'-600px'});
+				};
+				if(nset > -600){
+					list.css({'left':'-3000px'});
+				}
+			}
+			
+			}
+			go();
+			
+			
+		}
+		container.hover(stop,start);
+	})
+	
+</script>
+</body>
+</html>
